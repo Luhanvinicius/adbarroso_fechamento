@@ -8,6 +8,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
+import Combobox from '@/components/ui/Combobox';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { formatCurrency, getMonthName } from '@/lib/utils';
 import { User, UserRole, Movimentacao } from '@/types';
@@ -39,7 +40,18 @@ export default function MovimentacaoPage() {
     tipo: 'entrada' as 'entrada' | 'saida',
     categoriaEntrada: 'dizimo' as 'dizimo' | 'ofertas' | 'outros',
     valor: 0,
+    culto: '',
   });
+
+  const cultosPadrao = [
+    'Doutrina',
+    'Família',
+    'Adoração',
+    'Vitória',
+    'Missões',
+    'Santa Ceia',
+    'Ações de Graça',
+  ];
 
   const [saldoAnterior, setSaldoAnteriorValue] = useState(0);
   const [congregacoes, setCongregacoes] = useState<any[]>([]);
@@ -110,6 +122,16 @@ export default function MovimentacaoPage() {
 
   if (!user) return null;
 
+  const updateDescricaoAutomatica = (data: typeof formData) => {
+    if (data.tipo === 'entrada' && data.culto && data.valor > 0) {
+      const categoriaTexto = data.categoriaEntrada === 'dizimo' ? 'dízimo' : 
+                             data.categoriaEntrada === 'ofertas' ? 'oferta' : 'entrada';
+      const valorFormatado = data.valor.toFixed(2).replace('.', ',');
+      const descricao = `Culto de ${data.culto} - ${categoriaTexto} de ${valorFormatado} reais`;
+      setFormData({ ...data, descricao });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -133,6 +155,7 @@ export default function MovimentacaoPage() {
         tipo: 'entrada',
         categoriaEntrada: 'dizimo',
         valor: 0,
+        culto: '',
       });
       setShowForm(false);
       setEditingId(null);
@@ -272,16 +295,33 @@ export default function MovimentacaoPage() {
                       ]}
                     />
                     {formData.tipo === 'entrada' && (
-                      <Select
-                        label="Categoria"
-                        value={formData.categoriaEntrada}
-                        onChange={(e) => setFormData({ ...formData, categoriaEntrada: e.target.value as any })}
-                        options={[
-                          { value: 'dizimo', label: 'Dízimo' },
-                          { value: 'ofertas', label: 'Ofertas' },
-                          { value: 'outros', label: 'Outros' },
-                        ]}
-                      />
+                      <>
+                        <Select
+                          label="Categoria"
+                          value={formData.categoriaEntrada}
+                          onChange={(e) => {
+                            const newData = { ...formData, categoriaEntrada: e.target.value as any };
+                            setFormData(newData);
+                            updateDescricaoAutomatica(newData);
+                          }}
+                          options={[
+                            { value: 'dizimo', label: 'Dízimo' },
+                            { value: 'ofertas', label: 'Ofertas' },
+                            { value: 'outros', label: 'Outros' },
+                          ]}
+                        />
+                        <Combobox
+                          label="Culto"
+                          value={formData.culto}
+                          onChange={(value) => {
+                            const newData = { ...formData, culto: value };
+                            setFormData(newData);
+                            updateDescricaoAutomatica(newData);
+                          }}
+                          options={cultosPadrao}
+                          placeholder="Selecione ou digite o culto..."
+                        />
+                      </>
                     )}
                     <Input
                       label="Valor (R$)"
@@ -289,7 +329,11 @@ export default function MovimentacaoPage() {
                       step="0.01"
                       min="0"
                       value={formData.valor}
-                      onChange={(e) => setFormData({ ...formData, valor: parseFloat(e.target.value) || 0 })}
+                      onChange={(e) => {
+                        const newData = { ...formData, valor: parseFloat(e.target.value) || 0 };
+                        setFormData(newData);
+                        updateDescricaoAutomatica(newData);
+                      }}
                       required
                     />
                   </div>
