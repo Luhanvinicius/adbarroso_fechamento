@@ -52,7 +52,7 @@ export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableCellE
   );
 }
 
-export function TableCell({ className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
+export function TableCell({ className, ...props }: HTMLAttributes<HTMLTableCellElement> & { colSpan?: number }) {
   return (
     <td
       className={cn('px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700', className)}
