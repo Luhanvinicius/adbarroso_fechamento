@@ -109,9 +109,16 @@ export async function updateUser(id: string, updates: Partial<Omit<User, 'id' | 
     .update(updateData)
     .eq('id', id)
     .select()
-    .single();
+    .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error('Erro ao atualizar usuário:', error);
+    throw new Error(`Erro ao atualizar usuário: ${error.message}`);
+  }
+
+  if (!data) {
+    throw new Error('Usuário não encontrado após atualização');
+  }
 
   return {
     id: data.id,
@@ -193,23 +200,34 @@ export async function getCongregacaoById(id: string): Promise<Congregacao | null
 
 // ============ MOVIMENTAÇÕES ============
 export async function createMovimentacao(movimentacao: Omit<Movimentacao, 'id' | 'createdAt'>): Promise<Movimentacao> {
+  const insertData = {
+    dia: movimentacao.dia,
+    mes: movimentacao.mes,
+    ano: movimentacao.ano,
+    descricao: movimentacao.descricao,
+    tipo: movimentacao.tipo,
+    categoria_entrada: movimentacao.categoriaEntrada || null,
+    valor: movimentacao.valor,
+    congregacao_id: movimentacao.congregacaoId,
+    user_id: movimentacao.userId,
+  };
+
+  console.log('Criando movimentação:', insertData);
+
   const { data, error } = await supabaseAdmin
     .from('movimentacoes')
-    .insert({
-      dia: movimentacao.dia,
-      mes: movimentacao.mes,
-      ano: movimentacao.ano,
-      descricao: movimentacao.descricao,
-      tipo: movimentacao.tipo,
-      categoria_entrada: movimentacao.categoriaEntrada || null,
-      valor: movimentacao.valor,
-      congregacao_id: movimentacao.congregacaoId,
-      user_id: movimentacao.userId,
-    })
+    .insert(insertData)
     .select()
-    .single();
+    .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error('Erro ao criar movimentação:', error);
+    throw new Error(`Erro ao criar movimentação: ${error.message}`);
+  }
+
+  if (!data) {
+    throw new Error('Movimentação não foi criada');
+  }
 
   return {
     id: data.id,

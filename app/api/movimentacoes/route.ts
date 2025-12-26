@@ -22,12 +22,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log('Recebido no POST /api/movimentacoes:', body);
     const movimentacao = await createMovimentacao(body);
     return NextResponse.json(movimentacao, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro ao criar movimentação:', error);
     return NextResponse.json(
-      { error: 'Erro ao criar movimentação' },
+      { error: error.message || 'Erro ao criar movimentação' },
       { status: 500 }
     );
   }

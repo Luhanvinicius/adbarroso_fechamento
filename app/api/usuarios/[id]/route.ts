@@ -35,6 +35,8 @@ export async function PUT(
     const body = await request.json();
     const { dbData, ...updateData } = body;
     
+    console.log('Atualizando usuário:', id, updateData);
+    
     // dbData não é mais necessário com Supabase
     
     const user = await updateUser(id, updateData);
