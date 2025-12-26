@@ -62,10 +62,10 @@ export function loadFromStorage() {
       const saved = localStorage.getItem('igreja_db');
       if (saved) {
         const parsed = JSON.parse(saved);
-        db.users = new Map(parsed.users || []);
-        db.congregacoes = new Map(parsed.congregacoes || []);
-        db.movimentacoes = new Map(parsed.movimentacoes || []);
-        db.saldosAnteriores = new Map(parsed.saldosAnteriores || []);
+        db.users = new Map<string, any>(parsed.users || []);
+        db.congregacoes = new Map<string, any>(parsed.congregacoes || []);
+        db.movimentacoes = new Map<string, any>(parsed.movimentacoes || []);
+        db.saldosAnteriores = new Map<string, any>(parsed.saldosAnteriores || []);
         return true;
       }
     } catch (e) {
@@ -94,7 +94,7 @@ export function syncToServer(data: any, preserveExistingUsers: boolean = false) 
     if (data.users && Array.isArray(data.users)) {
       if (preserveExistingUsers) {
         // Preservar usuários existentes, apenas adicionar novos
-        const clientUsers = new Map(data.users);
+        const clientUsers = new Map<string, any>(data.users);
         const existingUsers = global.__igreja_db__.users;
         for (const [id, user] of existingUsers.entries()) {
           if (!clientUsers.has(id)) {
@@ -103,20 +103,20 @@ export function syncToServer(data: any, preserveExistingUsers: boolean = false) 
         }
         global.__igreja_db__.users = clientUsers;
       } else {
-        global.__igreja_db__.users = new Map(data.users);
+        global.__igreja_db__.users = new Map<string, any>(data.users);
       }
       db.users = global.__igreja_db__.users;
     }
     if (data.congregacoes && Array.isArray(data.congregacoes)) {
-      global.__igreja_db__.congregacoes = new Map(data.congregacoes);
+      global.__igreja_db__.congregacoes = new Map<string, any>(data.congregacoes);
       db.congregacoes = global.__igreja_db__.congregacoes;
     }
     if (data.movimentacoes && Array.isArray(data.movimentacoes)) {
-      global.__igreja_db__.movimentacoes = new Map(data.movimentacoes);
+      global.__igreja_db__.movimentacoes = new Map<string, any>(data.movimentacoes);
       db.movimentacoes = global.__igreja_db__.movimentacoes;
     }
     if (data.saldosAnteriores && Array.isArray(data.saldosAnteriores)) {
-      global.__igreja_db__.saldosAnteriores = new Map(data.saldosAnteriores);
+      global.__igreja_db__.saldosAnteriores = new Map<string, any>(data.saldosAnteriores);
       db.saldosAnteriores = global.__igreja_db__.saldosAnteriores;
     }
   }
