@@ -36,24 +36,25 @@ async function createTables() {
 
     // Criar tabela congregacoes
     console.log('📋 Criando tabela congregacoes...');
-    const { error: errorCongregacoes } = await supabaseAdmin.rpc('exec_sql', {
-      sql: `
-        CREATE TABLE IF NOT EXISTS congregacoes (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          name VARCHAR(255) NOT NULL,
-          campo VARCHAR(255) NOT NULL,
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-          UNIQUE(name, campo)
-        );
-      `
-    }).catch(async () => {
-      // Se RPC não funcionar, tentar via query direta
-      const { error } = await supabaseAdmin.from('_supabase_migrations').select('*').limit(1);
-      if (error) {
-        // Tentar criar via SQL direto usando uma abordagem diferente
-        console.log('⚠️  Tentando método alternativo...');
+    try {
+      const { error: errorCongregacoes } = await supabaseAdmin.rpc('exec_sql', {
+        sql: `
+          CREATE TABLE IF NOT EXISTS congregacoes (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            name VARCHAR(255) NOT NULL,
+            campo VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+            UNIQUE(name, campo)
+          );
+        `
+      });
+      if (errorCongregacoes) {
+        console.log('⚠️  RPC não disponível, usando método alternativo...');
       }
-    });
+    } catch (error) {
+      // Se RPC não funcionar, tentar via query direta
+      console.log('⚠️  RPC não disponível, usando método alternativo...');
+    }
 
     // Método alternativo: usar query SQL direta
     const schemaSQL = `
