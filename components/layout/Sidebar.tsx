@@ -12,7 +12,8 @@ import {
   LogOut,
   Church,
   Menu,
-  X
+  X,
+  TrendingUp
 } from 'lucide-react';
 import { UserRole } from '@/types';
 
@@ -48,6 +49,12 @@ export default function Sidebar({ userRole, userName }: SidebarProps) {
       label: 'Relatórios',
       href: '/relatorios',
       icon: FileText,
+      roles: ['admin', 'presidente_campo', 'pastor', 'tesoureiro_campo', 'tesoureiro_congregacao', 'lider_congregacao'],
+    },
+    {
+      label: 'Comparativo Anual',
+      href: '/relatorios-comparativos',
+      icon: TrendingUp,
       roles: ['admin', 'presidente_campo', 'pastor', 'tesoureiro_campo', 'tesoureiro_congregacao', 'lider_congregacao'],
     },
     {

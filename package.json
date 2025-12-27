@@ -15,7 +15,8 @@
     "corrigir-valores": "tsx scripts/corrigir-valores-exatos.ts",
     "inserir-outubro-pici": "tsx scripts/inserir-outubro-pici.ts",
     "inserir-setembro-pici": "tsx scripts/inserir-setembro-pici.ts",
-    "inserir-agosto-pici": "tsx scripts/inserir-agosto-pici.ts"
+    "inserir-agosto-pici": "tsx scripts/inserir-agosto-pici.ts",
+    "inserir-todos-dados-pici": "tsx scripts/inserir-todos-dados-pici.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
