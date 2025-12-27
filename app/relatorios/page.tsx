@@ -20,6 +20,7 @@ export default function RelatoriosPage() {
   const [relatorio, setRelatorio] = useState<any>(null);
   const [movimentacoes, setMovimentacoes] = useState<any[]>([]);
   const [saldoAnterior, setSaldoAnterior] = useState(0);
+  const [corrigindoValores, setCorrigindoValores] = useState(false);
   
   const currentDate = new Date();
   const [selectedCongregacao, setSelectedCongregacao] = useState('');
@@ -138,6 +139,44 @@ export default function RelatoriosPage() {
     return saldo;
   };
 
+  const handleCorrigirValores = async () => {
+    if (!confirm('Tem certeza que deseja corrigir os valores de Novembro/2025? Isso irá remover e reinserir todas as movimentações.')) {
+      return;
+    }
+
+    setCorrigindoValores(true);
+    try {
+      const response = await fetch('/api/corrigir-valores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao corrigir valores');
+      }
+
+      alert(`✅ Valores corrigidos com sucesso!\n\nTotais:\n- Dízimo: R$ ${data.totais.dizimo}\n- Ofertas: R$ ${data.totais.ofertas}\n- Total Entradas: R$ ${data.totais.totalEntradas}\n- Total Saídas: R$ ${data.totais.totalSaidas}\n- Saldo Final: R$ ${data.totais.saldoFinal}\n\nMovimentações inseridas: ${data.movimentacoesInseridas}`);
+
+      // Recarregar dados
+      if (selectedCongregacao) {
+        const [rel, movs, saldo] = await Promise.all([
+          fetchRelatorio(selectedCongregacao, selectedMes, selectedAno),
+          fetchMovimentacoes({ congregacaoId: selectedCongregacao, mes: selectedMes, ano: selectedAno }),
+          fetchSaldoAnterior(selectedCongregacao, selectedMes, selectedAno)
+        ]);
+        setRelatorio(rel);
+        setMovimentacoes(movs);
+        setSaldoAnterior(saldo);
+      }
+    } catch (error: any) {
+      alert('Erro ao corrigir valores: ' + error.message);
+    } finally {
+      setCorrigindoValores(false);
+    }
+  };
+
   // Obter nome da congregação selecionada
   const congregacaoNome = congregacoes.find(c => c.id === selectedCongregacao)?.name || '';
 
@@ -179,6 +218,21 @@ export default function RelatoriosPage() {
                   options={anos}
                 />
               </div>
+              {/* Botão para corrigir valores - apenas para Nov/2025 e Pici */}
+              {selectedMes === 11 && selectedAno === 2025 && selectedCongregacao && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={handleCorrigirValores}
+                    disabled={corrigindoValores}
+                    className="w-full sm:w-auto px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
+                  >
+                    {corrigindoValores ? 'Corrigindo...' : '🔧 Corrigir Valores de Novembro/2025'}
+                  </button>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Este botão irá remover e reinserir todas as movimentações de Nov/2025 para corrigir os valores conforme a planilha.
+                  </p>
+                </div>
+              )}
             </Card>
 
             {relatorio && (

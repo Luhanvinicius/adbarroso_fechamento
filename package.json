@@ -11,7 +11,8 @@
     "create-tables": "tsx scripts/create-tables.ts",
     "check-tables": "tsx scripts/check-tables.ts",
     "setup-db": "tsx scripts/setup-database.ts",
-    "setup-db-direct": "tsx scripts/setup-database-direct.ts"
+    "setup-db-direct": "tsx scripts/setup-database-direct.ts",
+    "corrigir-valores": "tsx scripts/corrigir-valores-exatos.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
