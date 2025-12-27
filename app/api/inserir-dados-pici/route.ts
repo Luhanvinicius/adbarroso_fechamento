@@ -92,125 +92,138 @@ const todosOsDados = {
   ],
 };
 
-export async function POST() {
-  try {
-    console.log('🌱 Inserindo TODOS os dados de Agosto, Setembro, Outubro e Novembro/2025 para Pici...');
+// Função compartilhada para inserir dados
+async function inserirDados() {
+  console.log('🌱 Inserindo TODOS os dados de Agosto, Setembro, Outubro e Novembro/2025 para Pici...');
 
-    // Buscar ID da congregação Pici
-    const { data: pici, error: errorPici } = await supabaseAdmin
-      .from('congregacoes')
-      .select('id, name')
-      .ilike('name', 'Pici')
-      .single();
+  // Buscar ID da congregação Pici
+  const { data: pici, error: errorPici } = await supabaseAdmin
+    .from('congregacoes')
+    .select('id, name')
+    .ilike('name', 'Pici')
+    .single();
 
-    if (errorPici || !pici) {
-      return NextResponse.json(
-        { error: 'Congregação Pici não encontrada', details: errorPici },
-        { status: 404 }
-      );
-    }
+  if (errorPici || !pici) {
+    throw new Error('Congregação Pici não encontrada');
+  }
 
-    // Buscar usuário
-    let { data: usuario } = await supabaseAdmin
+  // Buscar usuário
+  let { data: usuario } = await supabaseAdmin
+    .from('users')
+    .select('id, name, email')
+    .eq('email', 'prjunior@adbarroso.com')
+    .single();
+
+  if (!usuario) {
+    const { data: usuariosPici } = await supabaseAdmin
       .from('users')
       .select('id, name, email')
-      .eq('email', 'prjunior@adbarroso.com')
-      .single();
+      .eq('congregacao_id', pici.id)
+      .limit(1);
 
-    if (!usuario) {
-      const { data: usuariosPici } = await supabaseAdmin
+    if (usuariosPici && usuariosPici.length > 0) {
+      usuario = usuariosPici[0];
+    } else {
+      const { data: admin } = await supabaseAdmin
         .from('users')
         .select('id, name, email')
-        .eq('congregacao_id', pici.id)
-        .limit(1);
+        .eq('role', 'admin')
+        .limit(1)
+        .single();
 
-      if (usuariosPici && usuariosPici.length > 0) {
-        usuario = usuariosPici[0];
-      } else {
-        const { data: admin } = await supabaseAdmin
-          .from('users')
-          .select('id, name, email')
-          .eq('role', 'admin')
-          .limit(1)
-          .single();
+      if (!admin) {
+        throw new Error('Nenhum usuário encontrado');
+      }
+      usuario = admin;
+    }
+  }
 
-        if (!admin) {
-          return NextResponse.json(
-            { error: 'Nenhum usuário encontrado' },
-            { status: 404 }
-          );
-        }
-        usuario = admin;
+  // Inserir dados de forma idempotente (sem deletar dados existentes)
+  const resultados: any = {};
+  let totalInserido = 0;
+  let totalErros = 0;
+  let totalIgnorados = 0;
+
+  for (const [mesNome, dados] of Object.entries(todosOsDados)) {
+    const mes = dados[0].mes;
+    const ano = dados[0].ano;
+    
+    // Verificar quantas movimentações já existem para este mês/ano
+    const { data: existentes } = await supabaseAdmin
+      .from('movimentacoes')
+      .select('id, dia, mes, ano, descricao, valor')
+      .eq('congregacao_id', pici.id)
+      .eq('mes', mes)
+      .eq('ano', ano);
+
+    const movimentacoesExistentes = existentes || [];
+    
+    // Inserir apenas dados que não existem (verificar por dia, descrição e valor)
+    let sucesso = 0;
+    let erros = 0;
+    let ignorados = 0;
+
+    for (const mov of dados) {
+      // Verificar se já existe uma movimentação com mesmo dia, descrição e valor
+      const jaExiste = movimentacoesExistentes.some(
+        (existente: any) =>
+          existente.dia === mov.dia &&
+          existente.descricao === mov.descricao &&
+          parseFloat(existente.valor) === mov.valor
+      );
+
+      if (jaExiste) {
+        ignorados++;
+        totalIgnorados++;
+        continue; // Pular se já existe
+      }
+
+      try {
+        await createMovimentacao({
+          ...mov,
+          congregacaoId: pici.id,
+          userId: usuario.id,
+        });
+        sucesso++;
+        totalInserido++;
+      } catch (error: any) {
+        erros++;
+        totalErros++;
+        console.error(`Erro ao criar movimentação do dia ${mov.dia}:`, error.message);
       }
     }
 
-    // Inserir dados de forma idempotente (sem deletar dados existentes)
-    const resultados: any = {};
-    let totalInserido = 0;
-    let totalErros = 0;
-    let totalIgnorados = 0;
+    resultados[mesNome] = { sucesso, erros, ignorados, existentes: movimentacoesExistentes.length };
+  }
 
-    for (const [mesNome, dados] of Object.entries(todosOsDados)) {
-      const mes = dados[0].mes;
-      const ano = dados[0].ano;
-      
-      // Verificar quantas movimentações já existem para este mês/ano
-      const { data: existentes } = await supabaseAdmin
-        .from('movimentacoes')
-        .select('id, dia, mes, ano, descricao, valor')
-        .eq('congregacao_id', pici.id)
-        .eq('mes', mes)
-        .eq('ano', ano);
+  return {
+    success: true,
+    message: 'Dados inseridos com sucesso (sem deletar dados existentes)',
+    totalInserido,
+    totalErros,
+    totalIgnorados,
+    resultados,
+    nota: 'Dados existentes foram preservados. Apenas novos dados foram inseridos.',
+  };
+}
 
-      const movimentacoesExistentes = existentes || [];
-      
-      // Inserir apenas dados que não existem (verificar por dia, descrição e valor)
-      let sucesso = 0;
-      let erros = 0;
-      let ignorados = 0;
+export async function GET() {
+  try {
+    const resultado = await inserirDados();
+    return NextResponse.json(resultado);
+  } catch (error: any) {
+    console.error('Erro ao inserir dados:', error);
+    return NextResponse.json(
+      { error: 'Erro ao inserir dados', details: error.message },
+      { status: 500 }
+    );
+  }
+}
 
-      for (const mov of dados) {
-        // Verificar se já existe uma movimentação com mesmo dia, descrição e valor
-        const jaExiste = movimentacoesExistentes.some(
-          (existente: any) =>
-            existente.dia === mov.dia &&
-            existente.descricao === mov.descricao &&
-            parseFloat(existente.valor) === mov.valor
-        );
-
-        if (jaExiste) {
-          ignorados++;
-          totalIgnorados++;
-          continue; // Pular se já existe
-        }
-
-        try {
-          await createMovimentacao({
-            ...mov,
-            congregacaoId: pici.id,
-            userId: usuario.id,
-          });
-          sucesso++;
-          totalInserido++;
-        } catch (error: any) {
-          erros++;
-          totalErros++;
-          console.error(`Erro ao criar movimentação do dia ${mov.dia}:`, error.message);
-        }
-      }
-
-      resultados[mesNome] = { sucesso, erros, ignorados, existentes: movimentacoesExistentes.length };
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Dados inseridos com sucesso (sem deletar dados existentes)',
-      totalInserido,
-      totalErros,
-      totalIgnorados,
-      resultados,
-      nota: 'Dados existentes foram preservados. Apenas novos dados foram inseridos.',
-    });
+export async function POST() {
+  try {
+    const resultado = await inserirDados();
+    return NextResponse.json(resultado);
   } catch (error: any) {
     console.error('Erro ao inserir dados:', error);
     return NextResponse.json(
