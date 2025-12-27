@@ -57,7 +57,12 @@ export default function RelatoriosPage() {
 
   useEffect(() => {
     const loadRelatorio = async () => {
-      if (!selectedCongregacao) return;
+      if (!selectedCongregacao) {
+        console.log('Nenhuma congregação selecionada');
+        return;
+      }
+      
+      console.log('Carregando relatório:', { selectedCongregacao, selectedMes, selectedAno });
       
       try {
         const [rel, movs, saldo] = await Promise.all([
@@ -65,6 +70,9 @@ export default function RelatoriosPage() {
           fetchMovimentacoes({ congregacaoId: selectedCongregacao, mes: selectedMes, ano: selectedAno }),
           fetchSaldoAnterior(selectedCongregacao, selectedMes, selectedAno)
         ]);
+        
+        console.log('Dados carregados:', { rel, movs, saldo });
+        
         setRelatorio(rel);
         setMovimentacoes(movs);
         setSaldoAnterior(saldo);
