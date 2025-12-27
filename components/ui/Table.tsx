@@ -48,7 +48,11 @@ export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowEle
 export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
   return (
     <th
-      className={cn('px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold whitespace-nowrap', className)}
+      className={cn(
+        'px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold whitespace-nowrap',
+        'hover:bg-church-blue', // Manter cor azul no hover
+        className
+      )}
       {...props}
     />
   );

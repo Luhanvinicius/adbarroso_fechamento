@@ -226,46 +226,31 @@ export default function RelatoriosPage() {
                 {/* Gráficos */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                   <Card title="Distribuição de Entradas" className="overflow-hidden">
-                    {chartData.length > 0 && (
-                      <div className="w-full h-[250px] sm:h-[300px] lg:h-[350px]">
+                    {chartData.length > 0 && chartData.some(d => d.value > 0) && (
+                      <div className="w-full h-[250px] sm:h-[300px] lg:h-[350px] p-4">
                         <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={chartData}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={true}
-                              label={({ name, percent }) => {
-                                // Só mostrar label se for maior que 5% para evitar sobreposição
-                                if (percent < 0.05) return '';
-                                return `${name}: ${(percent * 100).toFixed(0)}%`;
-                              }}
-                              outerRadius="60%"
-                              innerRadius="20%"
-                              fill="#8884d8"
-                              dataKey="value"
-                            >
-                              {chartData.map((entry, index) => (
+                          <BarChart 
+                            data={chartData.filter(d => d.value > 0)} 
+                            layout="vertical"
+                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis type="number" />
+                            <YAxis dataKey="name" type="category" width={80} />
+                            <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                            <Legend />
+                            <Bar dataKey="value" fill="#0284c7" radius={[0, 4, 4, 0]}>
+                              {chartData.filter(d => d.value > 0).map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                               ))}
-                            </Pie>
-                            <Tooltip 
-                              formatter={(value: number) => formatCurrency(value)}
-                              contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '4px' }}
-                            />
-                            <Legend 
-                              verticalAlign="bottom" 
-                              height={36}
-                              formatter={(value: string) => {
-                                const entry = chartData.find(d => d.name === value);
-                                if (!entry) return value;
-                                const total = chartData.reduce((sum, d) => sum + d.value, 0);
-                                const percent = total > 0 ? (entry.value / total * 100).toFixed(0) : '0';
-                                return `${value}: ${percent}%`;
-                              }}
-                            />
-                          </PieChart>
+                            </Bar>
+                          </BarChart>
                         </ResponsiveContainer>
+                      </div>
+                    )}
+                    {(!chartData.length || !chartData.some(d => d.value > 0)) && (
+                      <div className="h-[250px] sm:h-[300px] lg:h-[350px] flex items-center justify-center text-gray-400">
+                        Nenhum dado disponível
                       </div>
                     )}
                   </Card>
@@ -329,7 +314,7 @@ export default function RelatoriosPage() {
                         </TableHeader>
                         <TableBody>
                           {/* Saldo Anterior */}
-                          <TableRow className="bg-gray-50 font-semibold">
+                          <TableRow className="bg-gray-50 font-semibold hover:bg-gray-50">
                             <TableCell className="font-bold">SALDO ANTERIOR</TableCell>
                             <TableCell colSpan={6}></TableCell>
                             <TableCell className="font-bold text-right">{formatCurrency(saldoAnterior)}</TableCell>
@@ -381,14 +366,14 @@ export default function RelatoriosPage() {
                           {/* Totais */}
                           {movimentacoes.length > 0 && (
                             <TableRow className="bg-gray-800 text-white font-bold hover:bg-gray-800">
-                              <TableCell className="text-white font-bold pointer-events-none">TOTAIS</TableCell>
-                              <TableCell colSpan={2} className="text-white pointer-events-none"></TableCell>
-                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalDizimo)}</TableCell>
-                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalOfertas)}</TableCell>
-                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalOutros)}</TableCell>
-                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalEntradas)}</TableCell>
-                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalSaidas)}</TableCell>
-                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.saldoFinal)}</TableCell>
+                              <TableCell className="text-white font-bold">TOTAIS</TableCell>
+                              <TableCell colSpan={1} className="text-white"></TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalDizimo)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalOfertas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalOutros)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalEntradas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalSaidas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.saldoFinal)}</TableCell>
                             </TableRow>
                           )}
                         </TableBody>
