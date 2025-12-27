@@ -3,7 +3,21 @@ import { createCongregacao, createUser, createMovimentacao } from '@/lib/db-oper
 
 export async function GET() {
   try {
-    // Limpar dados existentes (cuidado em produção!)
+    // PROTEÇÃO: Esta rota está desabilitada em produção para evitar perda de dados
+    // Em produção (Vercel), retornar erro para evitar deletar dados existentes
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+    
+    if (isProduction) {
+      return NextResponse.json(
+        { 
+          error: 'Esta rota está desabilitada em produção para proteger os dados existentes.',
+          message: 'Use a rota /api/inserir-dados-pici para inserir dados sem deletar.'
+        },
+        { status: 403 }
+      );
+    }
+
+    // Apenas em desenvolvimento: Limpar dados existentes (cuidado!)
     const { supabaseAdmin } = await import('@/lib/supabase');
     
     await supabaseAdmin.from('movimentacoes').delete().neq('id', '00000000-0000-0000-0000-000000000000');

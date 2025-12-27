@@ -144,28 +144,46 @@ export async function POST() {
       }
     }
 
-    // Verificar e limpar dados existentes
+    // Inserir dados de forma idempotente (sem deletar dados existentes)
     const resultados: any = {};
     let totalInserido = 0;
     let totalErros = 0;
+    let totalIgnorados = 0;
 
     for (const [mesNome, dados] of Object.entries(todosOsDados)) {
       const mes = dados[0].mes;
       const ano = dados[0].ano;
       
-      // Remover dados existentes
-      await supabaseAdmin
+      // Verificar quantas movimentações já existem para este mês/ano
+      const { data: existentes } = await supabaseAdmin
         .from('movimentacoes')
-        .delete()
+        .select('id, dia, mes, ano, descricao, valor')
         .eq('congregacao_id', pici.id)
         .eq('mes', mes)
         .eq('ano', ano);
 
-      // Inserir novos dados
+      const movimentacoesExistentes = existentes || [];
+      
+      // Inserir apenas dados que não existem (verificar por dia, descrição e valor)
       let sucesso = 0;
       let erros = 0;
+      let ignorados = 0;
 
       for (const mov of dados) {
+        // Verificar se já existe uma movimentação com mesmo dia, descrição e valor
+        const jaExiste = movimentacoesExistentes.some(
+          (existente: any) =>
+            existente.dia === mov.dia &&
+            existente.descricao === mov.descricao &&
+            parseFloat(existente.valor) === mov.valor
+        );
+
+        if (jaExiste) {
+          ignorados++;
+          totalIgnorados++;
+          continue; // Pular se já existe
+        }
+
         try {
           await createMovimentacao({
             ...mov,
@@ -181,15 +199,17 @@ export async function POST() {
         }
       }
 
-      resultados[mesNome] = { sucesso, erros };
+      resultados[mesNome] = { sucesso, erros, ignorados, existentes: movimentacoesExistentes.length };
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Dados inseridos com sucesso',
+      message: 'Dados inseridos com sucesso (sem deletar dados existentes)',
       totalInserido,
       totalErros,
+      totalIgnorados,
       resultados,
+      nota: 'Dados existentes foram preservados. Apenas novos dados foram inseridos.',
     });
   } catch (error: any) {
     console.error('Erro ao inserir dados:', error);

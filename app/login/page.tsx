@@ -14,26 +14,9 @@ export default function LoginPage() {
   const [initializing, setInitializing] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // Inicializar dados na primeira vez
+  // Não precisa mais inicializar dados - estamos usando Supabase
   useEffect(() => {
-    const initData = async () => {
-      const hasData = localStorage.getItem('igreja_db');
-      if (!hasData) {
-        try {
-          const response = await fetch('/api/init');
-          const result = await response.json();
-          
-          // Salvar dados retornados no localStorage
-          if (result.dbData) {
-            localStorage.setItem('igreja_db', JSON.stringify(result.dbData));
-          }
-        } catch (error) {
-          console.error('Erro ao inicializar:', error);
-        }
-      }
-      setInitializing(false);
-    };
-    initData();
+    setInitializing(false);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,27 +25,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Enviar dados do localStorage junto com o login para sincronizar
-      let dbData = localStorage.getItem('igreja_db');
-      
-      // Se não há dados no localStorage, inicializar primeiro
-      if (!dbData) {
-        try {
-          const initResponse = await fetch('/api/init');
-          const initResult = await initResponse.json();
-          if (initResult.dbData) {
-            localStorage.setItem('igreja_db', JSON.stringify(initResult.dbData));
-            dbData = JSON.stringify(initResult.dbData);
-          }
-        } catch (initError) {
-          console.error('Erro ao inicializar:', initError);
-        }
-      }
-      
-      const loginData: any = { email, password };
-      if (dbData) {
-        loginData.dbData = JSON.parse(dbData);
-      }
+      // Login direto com Supabase - não precisa mais de localStorage
+      const loginData = { email, password };
       
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -75,54 +39,13 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Se falhou e temos dados, tentar reinicializar
-        if (data.error === 'Email ou senha incorretos' && dbData) {
-          // Tentar inicializar novamente e fazer login
-          try {
-            const initResponse = await fetch('/api/init');
-            const initResult = await initResponse.json();
-            if (initResult.dbData) {
-              localStorage.setItem('igreja_db', JSON.stringify(initResult.dbData));
-              loginData.dbData = initResult.dbData;
-              
-              // Tentar login novamente
-              const retryResponse = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginData),
-              });
-              
-              const retryData = await retryResponse.json();
-              if (retryResponse.ok) {
-                localStorage.setItem('user', JSON.stringify(retryData.user));
-                router.push('/dashboard');
-                return;
-              }
-            }
-          } catch (retryError) {
-            console.error('Erro ao tentar reinicializar:', retryError);
-          }
-        }
-        
         setError(data.error || 'Erro ao fazer login');
         setLoading(false);
         return;
       }
 
-      // Salvar usuário no localStorage (sempre atualizar com dados do servidor)
+      // Salvar usuário no localStorage
       localStorage.setItem('user', JSON.stringify(data.user));
-      
-      // Atualizar também os dados do banco se o servidor retornou
-      // Isso garante que sempre temos os dados mais recentes
-      if (dbData) {
-        // Sincronizar dados atualizados do servidor
-        const updatedDbResponse = await fetch('/api/usuarios');
-        if (updatedDbResponse.ok) {
-          // Os dados já estão sincronizados no servidor via login
-        }
-      }
       
       router.push('/dashboard');
     } catch (err) {
