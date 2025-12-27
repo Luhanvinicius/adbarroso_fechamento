@@ -37,12 +37,12 @@ export function TableBody({ className, ...props }: HTMLAttributes<HTMLTableSecti
 export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) {
   // Se a linha já tem hover definido ou cor de fundo específica, não adicionar o padrão
   const hasCustomHover = className?.includes('hover:');
-  const hasBgColor = className?.includes('bg-') && !className?.includes('bg-white');
+  const hasBgColor = className?.includes('bg-church-blue') || className?.includes('bg-gray-800');
   return (
     <tr
       className={cn(
         !hasCustomHover && !hasBgColor && 'hover:bg-gray-50', 
-        'transition-colors', 
+        !hasBgColor && 'transition-colors', 
         className
       )}
       {...props}

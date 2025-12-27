@@ -448,15 +448,15 @@ export default function MovimentacaoPage() {
                         </TableRow>
                       );
                     })}
-                    <TableRow className="bg-church-blue text-white font-bold hover:!bg-church-blue">
-                      <TableCell className="hover:!bg-transparent">TOTAIS</TableCell>
-                      <TableCell className="hover:!bg-transparent"></TableCell>
-                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalDizimo)}</TableCell>
-                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalOfertas)}</TableCell>
-                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalOutros)}</TableCell>
-                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalEntradas)}</TableCell>
-                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalSaidas)}</TableCell>
-                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.saldoFinal)}</TableCell>
+                    <TableRow className="bg-church-blue text-white font-bold" style={{ pointerEvents: 'none' }}>
+                      <TableCell className="text-white font-bold bg-church-blue">TOTAIS</TableCell>
+                      <TableCell className="text-white bg-church-blue"></TableCell>
+                      <TableCell className="text-white font-bold bg-church-blue">{formatCurrency(relatorio.totalDizimo)}</TableCell>
+                      <TableCell className="text-white font-bold bg-church-blue">{formatCurrency(relatorio.totalOfertas)}</TableCell>
+                      <TableCell className="text-white font-bold bg-church-blue">{formatCurrency(relatorio.totalOutros)}</TableCell>
+                      <TableCell className="text-white font-bold bg-church-blue">{formatCurrency(relatorio.totalEntradas)}</TableCell>
+                      <TableCell className="text-white font-bold bg-church-blue">{formatCurrency(relatorio.totalSaidas)}</TableCell>
+                      <TableCell className="text-white font-bold bg-church-blue">{formatCurrency(relatorio.saldoFinal)}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
