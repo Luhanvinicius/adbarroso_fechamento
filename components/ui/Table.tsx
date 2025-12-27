@@ -35,22 +35,29 @@ export function TableBody({ className, ...props }: HTMLAttributes<HTMLTableSecti
 }
 
 export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) {
-  // Se a linha já tem hover definido, não adicionar o padrão
+  // Se a linha já tem hover definido ou cor de fundo específica, não adicionar o padrão
   const hasCustomHover = className?.includes('hover:');
+  const hasBgColor = className?.includes('bg-') && !className?.includes('bg-white');
   return (
     <tr
-      className={cn(!hasCustomHover && 'hover:bg-gray-50', 'transition-colors', className)}
+      className={cn(
+        !hasCustomHover && !hasBgColor && 'hover:bg-gray-50', 
+        'transition-colors', 
+        className
+      )}
       {...props}
     />
   );
 }
 
 export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
+  // Não aplicar hover se já tiver uma cor de fundo definida
+  const hasBgColor = className?.includes('bg-');
   return (
     <th
       className={cn(
         'px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold whitespace-nowrap',
-        'hover:bg-church-blue', // Manter cor azul no hover
+        !hasBgColor && 'hover:bg-church-blue', // Apenas aplicar hover se não tiver cor de fundo
         className
       )}
       {...props}
@@ -59,9 +66,15 @@ export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableCellE
 }
 
 export function TableCell({ className, ...props }: HTMLAttributes<HTMLTableCellElement> & { colSpan?: number }) {
+  // Não aplicar hover se a célula estiver em uma linha com cor de fundo específica
+  const hasBgColor = className?.includes('bg-');
   return (
     <td
-      className={cn('px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700', className)}
+      className={cn(
+        'px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700',
+        !hasBgColor && 'hover:bg-transparent', // Prevenir hover indesejado
+        className
+      )}
       {...props}
     />
   );

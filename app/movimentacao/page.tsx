@@ -409,11 +409,11 @@ export default function MovimentacaoPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow className="bg-gray-50 font-semibold">
-                      <TableCell>SALDO ANTERIOR</TableCell>
-                      <TableCell colSpan={5}></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="font-bold">{formatCurrency(saldoAnterior)}</TableCell>
+                    <TableRow className="bg-gray-50 font-semibold hover:!bg-gray-50">
+                      <TableCell className="hover:!bg-transparent">SALDO ANTERIOR</TableCell>
+                      <TableCell colSpan={5} className="hover:!bg-transparent"></TableCell>
+                      <TableCell className="hover:!bg-transparent"></TableCell>
+                      <TableCell className="font-bold hover:!bg-transparent">{formatCurrency(saldoAnterior)}</TableCell>
                     </TableRow>
                     {movimentacoes.map((mov, index) => {
                       const saldo = calcularSaldoAcumulado(index);
@@ -448,15 +448,15 @@ export default function MovimentacaoPage() {
                         </TableRow>
                       );
                     })}
-                    <TableRow className="bg-church-blue text-white font-bold">
-                      <TableCell>TOTAIS</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell>{formatCurrency(relatorio.totalDizimo)}</TableCell>
-                      <TableCell>{formatCurrency(relatorio.totalOfertas)}</TableCell>
-                      <TableCell>{formatCurrency(relatorio.totalOutros)}</TableCell>
-                      <TableCell>{formatCurrency(relatorio.totalEntradas)}</TableCell>
-                      <TableCell>{formatCurrency(relatorio.totalSaidas)}</TableCell>
-                      <TableCell>{formatCurrency(relatorio.saldoFinal)}</TableCell>
+                    <TableRow className="bg-church-blue text-white font-bold hover:!bg-church-blue">
+                      <TableCell className="hover:!bg-transparent">TOTAIS</TableCell>
+                      <TableCell className="hover:!bg-transparent"></TableCell>
+                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalDizimo)}</TableCell>
+                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalOfertas)}</TableCell>
+                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalOutros)}</TableCell>
+                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalEntradas)}</TableCell>
+                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.totalSaidas)}</TableCell>
+                      <TableCell className="hover:!bg-transparent">{formatCurrency(relatorio.saldoFinal)}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
