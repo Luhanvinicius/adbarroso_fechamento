@@ -382,14 +382,14 @@ export default function RelatoriosPage() {
                   <Table className="min-w-full">
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="sticky left-0 bg-church-blue z-10 whitespace-nowrap">DIA</TableHead>
-                            <TableHead className="min-w-[200px] whitespace-nowrap">DESCRIÇÃO</TableHead>
-                            <TableHead className="whitespace-nowrap">DÍZIMO</TableHead>
-                            <TableHead className="whitespace-nowrap">OFERTAS</TableHead>
-                            <TableHead className="whitespace-nowrap">OUTROS</TableHead>
-                            <TableHead className="whitespace-nowrap">TOTAL ENTRADA</TableHead>
-                            <TableHead className="whitespace-nowrap">SAÍDAS</TableHead>
-                            <TableHead className="whitespace-nowrap">SALDO</TableHead>
+                            <TableHead className="sticky left-0 z-10 whitespace-nowrap bg-church-blue text-white">DIA</TableHead>
+                            <TableHead className="min-w-[200px] whitespace-nowrap bg-church-blue text-white">DESCRIÇÃO</TableHead>
+                            <TableHead className="whitespace-nowrap bg-church-blue text-white">DÍZIMO</TableHead>
+                            <TableHead className="whitespace-nowrap bg-church-blue text-white">OFERTAS</TableHead>
+                            <TableHead className="whitespace-nowrap bg-church-blue text-white">OUTROS</TableHead>
+                            <TableHead className="whitespace-nowrap bg-church-blue text-white">TOTAL ENTRADA</TableHead>
+                            <TableHead className="whitespace-nowrap bg-church-blue text-white">SAÍDAS</TableHead>
+                            <TableHead className="whitespace-nowrap bg-church-blue text-white">SALDO</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>

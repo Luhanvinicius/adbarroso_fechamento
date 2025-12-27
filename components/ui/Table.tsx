@@ -51,13 +51,12 @@ export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowEle
 }
 
 export function TableHead({ className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
-  // Não aplicar hover se já tiver uma cor de fundo definida
-  const hasBgColor = className?.includes('bg-');
+  // Remover completamente o hover do cabeçalho - manter apenas fundo azul fixo
   return (
     <th
       className={cn(
         'px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold whitespace-nowrap',
-        !hasBgColor && 'hover:bg-church-blue', // Apenas aplicar hover se não tiver cor de fundo
+        'bg-church-blue text-white', // Fundo azul fixo e texto branco sempre visível
         className
       )}
       {...props}

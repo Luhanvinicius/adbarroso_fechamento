@@ -398,14 +398,14 @@ export default function MovimentacaoPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>DIA</TableHead>
-                      <TableHead>DESCRIÇÃO</TableHead>
-                      <TableHead>DÍZIMO</TableHead>
-                      <TableHead>OFERTAS</TableHead>
-                      <TableHead>OUTROS</TableHead>
-                      <TableHead>TOTAL ENTRADA</TableHead>
-                      <TableHead>SAÍDAS</TableHead>
-                      <TableHead>SALDO</TableHead>
+                      <TableHead className="bg-church-blue text-white">DIA</TableHead>
+                      <TableHead className="bg-church-blue text-white">DESCRIÇÃO</TableHead>
+                      <TableHead className="bg-church-blue text-white">DÍZIMO</TableHead>
+                      <TableHead className="bg-church-blue text-white">OFERTAS</TableHead>
+                      <TableHead className="bg-church-blue text-white">OUTROS</TableHead>
+                      <TableHead className="bg-church-blue text-white">TOTAL ENTRADA</TableHead>
+                      <TableHead className="bg-church-blue text-white">SAÍDAS</TableHead>
+                      <TableHead className="bg-church-blue text-white">SALDO</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
