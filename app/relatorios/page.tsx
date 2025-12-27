@@ -219,7 +219,7 @@ export default function RelatoriosPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                   <Card title="Distribuição de Entradas" className="overflow-hidden">
                     {chartData.length > 0 && (
-                      <div className="w-full" style={{ height: '250px', minHeight: '250px' }}>
+                      <div className="w-full h-[250px] sm:h-[300px] lg:h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
@@ -228,7 +228,7 @@ export default function RelatoriosPage() {
                               cy="50%"
                               labelLine={false}
                               label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                              outerRadius={60}
+                              outerRadius="70%"
                               fill="#8884d8"
                               dataKey="value"
                             >
@@ -353,15 +353,15 @@ export default function RelatoriosPage() {
                           
                           {/* Totais */}
                           {movimentacoes.length > 0 && (
-                            <TableRow className="bg-church-blue text-white font-bold">
-                              <TableCell>TOTAIS</TableCell>
-                              <TableCell colSpan={2}></TableCell>
-                              <TableCell className="text-right">{formatCurrency(relatorio.totalDizimo)}</TableCell>
-                              <TableCell className="text-right">{formatCurrency(relatorio.totalOfertas)}</TableCell>
-                              <TableCell className="text-right">{formatCurrency(relatorio.totalOutros)}</TableCell>
-                              <TableCell className="text-right">{formatCurrency(relatorio.totalEntradas)}</TableCell>
-                              <TableCell className="text-right">{formatCurrency(relatorio.totalSaidas)}</TableCell>
-                              <TableCell className="text-right">{formatCurrency(relatorio.saldoFinal)}</TableCell>
+                            <TableRow className="bg-gray-800 text-white font-bold">
+                              <TableCell className="text-white font-bold">TOTAIS</TableCell>
+                              <TableCell colSpan={2} className="text-white"></TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalDizimo)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalOfertas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalOutros)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalEntradas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalSaidas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.saldoFinal)}</TableCell>
                             </TableRow>
                           )}
                         </TableBody>
