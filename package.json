@@ -12,7 +12,10 @@
     "check-tables": "tsx scripts/check-tables.ts",
     "setup-db": "tsx scripts/setup-database.ts",
     "setup-db-direct": "tsx scripts/setup-database-direct.ts",
-    "corrigir-valores": "tsx scripts/corrigir-valores-exatos.ts"
+    "corrigir-valores": "tsx scripts/corrigir-valores-exatos.ts",
+    "inserir-outubro-pici": "tsx scripts/inserir-outubro-pici.ts",
+    "inserir-setembro-pici": "tsx scripts/inserir-setembro-pici.ts",
+    "inserir-agosto-pici": "tsx scripts/inserir-agosto-pici.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -35,11 +38,13 @@
     "recharts": "^2.10.3",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3",
+    "xlsx": "^0.18.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/pg": "^8.16.0",
+    "@types/xlsx": "^0.0.36",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.0.4",
     "tsx": "^4.7.0"

@@ -11,6 +11,8 @@ import { formatCurrency, getMonthName } from '@/lib/utils';
 import { User, UserRole } from '@/types';
 import { fetchCongregacoes, fetchRelatorio, fetchMovimentacoes, fetchSaldoAnterior } from '@/lib/api-client';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { exportarParaCSV, exportarParaXLSX } from '@/lib/export-utils';
+import { Download } from 'lucide-react';
 
 export default function RelatoriosPage() {
   const router = useRouter();
@@ -238,15 +240,39 @@ export default function RelatoriosPage() {
             {relatorio && (
               <>
                 {/* Título do Relatório */}
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="text-xl sm:text-2xl font-bold text-church-dark">
-                    Campo do Barroso II - {getMonthName(selectedMes)} de {selectedAno}
-                  </h2>
-                  {congregacaoNome && (
-                    <p className="text-sm sm:text-base text-gray-600 mt-1">
-                      Congregação: {congregacaoNome}
-                    </p>
-                  )}
+                <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-church-dark">
+                      Campo do Barroso II - {getMonthName(selectedMes)} de {selectedAno}
+                    </h2>
+                    {congregacaoNome && (
+                      <p className="text-sm sm:text-base text-gray-600 mt-1">
+                        Congregação: {congregacaoNome}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Botão de Exportação */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => exportarParaCSV(relatorio, movimentacoes, congregacaoNome)}
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors shadow-sm"
+                      title="Exportar para CSV"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="hidden sm:inline">Exportar CSV</span>
+                      <span className="sm:hidden">CSV</span>
+                    </button>
+                    <button
+                      onClick={() => exportarParaXLSX(relatorio, movimentacoes, congregacaoNome)}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm"
+                      title="Exportar para Excel"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="hidden sm:inline">Exportar XLSX</span>
+                      <span className="sm:hidden">XLSX</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Resumo */}
