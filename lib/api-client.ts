@@ -35,11 +35,20 @@ export async function createMovimentacao(data: any) {
 }
 
 export async function fetchRelatorio(congregacaoId: string, mes: number, ano: number) {
-  const res = await fetch(
-    `/api/relatorios?congregacaoId=${congregacaoId}&mes=${mes}&ano=${ano}`
-  );
-  if (!res.ok) throw new Error('Erro ao buscar relatório');
-  return res.json();
+  const url = `/api/relatorios?congregacaoId=${congregacaoId}&mes=${mes}&ano=${ano}`;
+  console.log('Buscando relatório:', url);
+  
+  const res = await fetch(url);
+  
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    console.error('Erro ao buscar relatório:', res.status, errorData);
+    throw new Error(errorData.error || 'Erro ao buscar relatório');
+  }
+  
+  const data = await res.json();
+  console.log('Relatório recebido:', data);
+  return data;
 }
 
 export async function fetchSaldoAnterior(congregacaoId: string, mes: number, ano: number) {

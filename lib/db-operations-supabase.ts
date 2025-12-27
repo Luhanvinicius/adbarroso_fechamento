@@ -200,6 +200,38 @@ export async function getCongregacaoById(id: string): Promise<Congregacao | null
 
 // ============ MOVIMENTAÇÕES ============
 export async function createMovimentacao(movimentacao: Omit<Movimentacao, 'id' | 'createdAt'>): Promise<Movimentacao> {
+  // Validar dados obrigatórios
+  if (!movimentacao.congregacaoId) {
+    throw new Error('Congregação é obrigatória');
+  }
+  if (!movimentacao.userId) {
+    throw new Error('Usuário é obrigatório');
+  }
+
+  // Verificar se a congregação existe
+  const { data: congregacao, error: congregacaoError } = await supabaseAdmin
+    .from('congregacoes')
+    .select('id')
+    .eq('id', movimentacao.congregacaoId)
+    .maybeSingle();
+
+  if (congregacaoError || !congregacao) {
+    console.error('Congregação não encontrada:', movimentacao.congregacaoId);
+    throw new Error(`Congregação não encontrada. ID: ${movimentacao.congregacaoId}`);
+  }
+
+  // Verificar se o usuário existe
+  const { data: usuario, error: usuarioError } = await supabaseAdmin
+    .from('users')
+    .select('id')
+    .eq('id', movimentacao.userId)
+    .maybeSingle();
+
+  if (usuarioError || !usuario) {
+    console.error('Usuário não encontrado:', movimentacao.userId);
+    throw new Error(`Usuário não encontrado. ID: ${movimentacao.userId}`);
+  }
+
   const insertData = {
     dia: movimentacao.dia,
     mes: movimentacao.mes,

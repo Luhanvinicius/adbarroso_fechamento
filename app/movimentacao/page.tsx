@@ -140,7 +140,27 @@ export default function MovimentacaoPage() {
       return;
     }
 
+    // Validar se a congregação existe
+    const congregacaoExiste = congregacoes.some(c => c.id === selectedCongregacao);
+    if (!congregacaoExiste) {
+      alert('Congregação selecionada não é válida. Por favor, selecione novamente.');
+      return;
+    }
+
+    if (!user?.id) {
+      alert('Usuário não identificado. Por favor, faça login novamente.');
+      return;
+    }
+
     try {
+      console.log('Enviando movimentação:', {
+        ...formData,
+        mes: selectedMes,
+        ano: selectedAno,
+        congregacaoId: selectedCongregacao,
+        userId: user.id,
+      });
+      
       await createMovimentacao({
         ...formData,
         mes: selectedMes,
