@@ -234,9 +234,14 @@ export default function RelatoriosPage() {
                               data={chartData}
                               cx="50%"
                               cy="50%"
-                              labelLine={false}
-                              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                              outerRadius="70%"
+                              labelLine={true}
+                              label={({ name, percent }) => {
+                                // Só mostrar label se for maior que 5% para evitar sobreposição
+                                if (percent < 0.05) return '';
+                                return `${name}: ${(percent * 100).toFixed(0)}%`;
+                              }}
+                              outerRadius="60%"
+                              innerRadius="20%"
                               fill="#8884d8"
                               dataKey="value"
                             >
@@ -244,7 +249,21 @@ export default function RelatoriosPage() {
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                               ))}
                             </Pie>
-                            <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                            <Tooltip 
+                              formatter={(value: number) => formatCurrency(value)}
+                              contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '4px' }}
+                            />
+                            <Legend 
+                              verticalAlign="bottom" 
+                              height={36}
+                              formatter={(value: string) => {
+                                const entry = chartData.find(d => d.name === value);
+                                if (!entry) return value;
+                                const total = chartData.reduce((sum, d) => sum + d.value, 0);
+                                const percent = total > 0 ? (entry.value / total * 100).toFixed(0) : '0';
+                                return `${value}: ${percent}%`;
+                              }}
+                            />
                           </PieChart>
                         </ResponsiveContainer>
                       </div>
@@ -361,15 +380,15 @@ export default function RelatoriosPage() {
                           
                           {/* Totais */}
                           {movimentacoes.length > 0 && (
-                            <TableRow className="bg-gray-800 text-white font-bold">
-                              <TableCell className="text-white font-bold">TOTAIS</TableCell>
-                              <TableCell colSpan={2} className="text-white"></TableCell>
-                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalDizimo)}</TableCell>
-                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalOfertas)}</TableCell>
-                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalOutros)}</TableCell>
-                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalEntradas)}</TableCell>
-                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.totalSaidas)}</TableCell>
-                              <TableCell className="text-right text-white font-bold">{formatCurrency(relatorio.saldoFinal)}</TableCell>
+                            <TableRow className="bg-gray-800 text-white font-bold hover:bg-gray-800">
+                              <TableCell className="text-white font-bold pointer-events-none">TOTAIS</TableCell>
+                              <TableCell colSpan={2} className="text-white pointer-events-none"></TableCell>
+                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalDizimo)}</TableCell>
+                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalOfertas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalOutros)}</TableCell>
+                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalEntradas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.totalSaidas)}</TableCell>
+                              <TableCell className="text-right text-white font-bold pointer-events-none">{formatCurrency(relatorio.saldoFinal)}</TableCell>
                             </TableRow>
                           )}
                         </TableBody>

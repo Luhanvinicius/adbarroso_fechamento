@@ -38,8 +38,8 @@ async function corrigirMovimentacoes() {
     const { data: pici, error: errorPici } = await supabaseAdmin
       .from('congregacoes')
       .select('id, name')
-      .eq('name', 'Pici')
-      .single();
+      .ilike('name', 'Pici')
+      .maybeSingle();
 
     if (errorPici || !pici) {
       console.error('❌ Erro ao buscar congregação Pici:', errorPici);
