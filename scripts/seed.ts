@@ -175,9 +175,9 @@ async function seed() {
       console.log(`  ✓ ${created.name} (${created.email})`);
     }
 
-    // Criar movimentações de exemplo (Novembro 2025 - Sede)
+    // Criar movimentações de exemplo (Novembro 2025 - Pici)
     console.log('💰 Criando movimentações de exemplo...');
-    const sedeId = createdCongregacoes.find(c => c.name === 'Sede')?.id!;
+    const piciId = createdCongregacoes.find(c => c.name === 'Pici')?.id!;
     const userId = createdUsers.find(u => u.email === 'prjunior@adbarroso.com')?.id!;
 
     const movimentacoesData = [
@@ -189,7 +189,7 @@ async function seed() {
         tipo: 'entrada' as const,
         categoriaEntrada: 'ofertas' as const,
         valor: 3.00,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -200,7 +200,7 @@ async function seed() {
         tipo: 'entrada' as const,
         categoriaEntrada: 'dizimo' as const,
         valor: 100.00,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -211,7 +211,7 @@ async function seed() {
         tipo: 'entrada' as const,
         categoriaEntrada: 'dizimo' as const,
         valor: 100.00,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -222,7 +222,7 @@ async function seed() {
         tipo: 'entrada' as const,
         categoriaEntrada: 'dizimo' as const,
         valor: 50.00,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -232,7 +232,7 @@ async function seed() {
         descricao: 'Pg. Pagamento Agua - 52,89',
         tipo: 'saida' as const,
         valor: 52.89,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -242,7 +242,7 @@ async function seed() {
         descricao: 'Pg. compra de 4 garrafão de agua - 11 reais',
         tipo: 'saida' as const,
         valor: 11.00,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -252,7 +252,7 @@ async function seed() {
         descricao: 'Pg. pagamento conta de Luz - 28,52',
         tipo: 'saida' as const,
         valor: 28.52,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
       {
@@ -263,7 +263,7 @@ async function seed() {
         tipo: 'entrada' as const,
         categoriaEntrada: 'dizimo' as const,
         valor: 140.00,
-        congregacaoId: sedeId,
+        congregacaoId: piciId,
         userId: userId,
       },
     ];

@@ -86,8 +86,8 @@ export async function GET() {
       createdUsers.push(created);
     }
 
-    // Criar movimentações de exemplo (Novembro 2025 - Sede)
-    const sedeId = createdCongregacoes.find(c => c.name === 'Sede')?.id!;
+    // Criar movimentações de exemplo (Novembro 2025 - Pici)
+    const piciId = createdCongregacoes.find(c => c.name === 'Pici')?.id!;
     const userId = createdUsers.find(u => u.email === 'prjunior@adbarroso.com')?.id!;
 
     const movimentacoesData = [
