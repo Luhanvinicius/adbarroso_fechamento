@@ -116,3 +116,4 @@ CREATE POLICY "Allow all operations on saldos_anteriores for service role"
 
 Depois disso, o sistema estará funcionando com PostgreSQL/Supabase! 🚀
 
+

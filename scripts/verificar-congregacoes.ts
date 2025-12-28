@@ -125,3 +125,4 @@ async function verificarCongregacoes() {
 
 verificarCongregacoes();
 
+

@@ -93,11 +93,50 @@ export function exportarParaCSV(
   document.body.removeChild(link);
 }
 
-export function exportarParaXLSX(
+export async function exportarParaXLSX(
   relatorio: Relatorio,
   movimentacoes: Movimentacao[],
-  congregacaoNome: string
-): void {
+  congregacaoNome: string,
+  congregacaoId?: string
+): Promise<void> {
+  // Se temos congregacaoId, usar a API route que usa o template
+  if (congregacaoId) {
+    try {
+      const response = await fetch('/api/exportar-xlsx', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          congregacaoId,
+          mes: relatorio.mes,
+          ano: relatorio.ano,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao exportar XLSX');
+      }
+
+      // Baixar o arquivo
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const mesNome = getMonthName(relatorio.mes);
+      link.download = `Movimentacao_${congregacaoNome.replace(/\s+/g, '_')}_${mesNome}_${relatorio.ano}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return;
+    } catch (error) {
+      console.error('Erro ao exportar usando template:', error);
+      // Fallback para método antigo se houver erro
+    }
+  }
+
+  // Método antigo (fallback)
   const mesNome = getMonthName(relatorio.mes);
   const workbook = XLSX.utils.book_new();
 

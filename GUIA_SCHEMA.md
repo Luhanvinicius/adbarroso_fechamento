@@ -93,3 +93,4 @@ Depois de executar o schema com sucesso:
 2. Teste o sistema: `npm run dev`
 3. Faça login com: `admin@adbarroso.com` / `admin123`
 
+

@@ -21,3 +21,4 @@ SUPABASE_PUBLISHABLE_KEY=sb_publishable_97TJdq37FxsP-Xd32L3dvA_7lFuKaGm
 SUPABASE_SECRET_KEY=sb_secret_pP6g2phs4x1yFImq755tNg_h8jKWSyh
 SUPABASE_URL=https://hkjvxswdpsoiidgvuyit.supabase.co
 
+

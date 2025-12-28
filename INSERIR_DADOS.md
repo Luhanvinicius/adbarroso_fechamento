@@ -108,3 +108,4 @@ Essas variáveis devem estar configuradas:
 - No arquivo `.env.local` (para execução local)
 - No painel do Vercel (para execução em produção)
 
+

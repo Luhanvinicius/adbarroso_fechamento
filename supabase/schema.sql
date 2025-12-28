@@ -88,3 +88,4 @@ CREATE POLICY "Allow all operations on saldos_anteriores for service role"
   USING (true)
   WITH CHECK (true);
 
+

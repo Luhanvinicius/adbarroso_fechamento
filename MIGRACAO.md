@@ -87,3 +87,4 @@ Ou conecte seu repositório GitHub ao Vercel para deploy automático.
 - O arquivo `lib/db-operations.ts` agora exporta funções do `db-operations-supabase.ts`
 - O sistema antigo (`lib/db.ts`) ainda existe mas não é mais usado
 
+

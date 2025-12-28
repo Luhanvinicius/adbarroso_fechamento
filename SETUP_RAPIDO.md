@@ -52,3 +52,4 @@ No Supabase Dashboard, vá em **"Table Editor"** e você deve ver:
 - ✅ `movimentacoes`
 - ✅ `saldos_anteriores`
 
+

@@ -57,3 +57,4 @@ AND table_name IN ('congregacoes', 'users', 'movimentacoes', 'saldos_anteriores'
 
 Deve retornar 4 linhas, uma para cada tabela.
 
+

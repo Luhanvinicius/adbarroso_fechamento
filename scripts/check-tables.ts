@@ -66,3 +66,4 @@ async function checkTables() {
 
 checkTables();
 
+

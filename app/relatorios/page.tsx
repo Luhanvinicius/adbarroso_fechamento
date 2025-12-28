@@ -264,7 +264,7 @@ export default function RelatoriosPage() {
                       <span className="sm:hidden">CSV</span>
                     </button>
                     <button
-                      onClick={() => exportarParaXLSX(relatorio, movimentacoes, congregacaoNome)}
+                      onClick={() => exportarParaXLSX(relatorio, movimentacoes, congregacaoNome, selectedCongregacao)}
                       className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm"
                       title="Exportar para Excel"
                     >

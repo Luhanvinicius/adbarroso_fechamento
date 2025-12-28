@@ -56,3 +56,4 @@ Após criar o `.env.local`:
 3. Execute `npm run seed` para popular o banco
 4. Execute `npm run dev` para testar localmente
 
+
