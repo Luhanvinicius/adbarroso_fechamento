@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 import { join } from 'path';
 import { getRelatorioMensal } from '@/lib/db-operations-supabase';
 import { getMovimentacoes } from '@/lib/db-operations-supabase';
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     // Buscar dados
     const [relatorio, movimentacoes, saldoAnterior, congregacao] = await Promise.all([
       getRelatorioMensal(congregacaoId, mes, ano),
-      getMovimentacoes({ congregacaoId, mes, ano }),
+      getMovimentacoes(congregacaoId, mes, ano),
       getSaldoAnterior(congregacaoId, mes, ano),
       getCongregacaoById(congregacaoId),
     ]);
